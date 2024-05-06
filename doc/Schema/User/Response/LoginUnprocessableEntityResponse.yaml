@@ -1,0 +1,25 @@
+description: Unprocessable Entity
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - code
+        - message
+        - internalCode
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+        message:
+          type: string
+          description: Error message
+        internalCode:
+          type: integer
+          description: Internal error code
+        additionalInfo:
+          type: object
+          properties:
+            email:
+              type: string
+              description: Additional information about the error (example the email that wasn't found)

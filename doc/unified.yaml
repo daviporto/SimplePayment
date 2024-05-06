@@ -1,0 +1,204 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SimplePayment",
+    "description": "SimplePayment",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:9511/api"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Bearer token necessary to access APIs"
+      }
+    }
+  },
+  "paths": {
+    "/user/register": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "description": "register user request body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "password_confirmation",
+                  "type"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Name",
+                    "description": "user's name"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "aa@gmail.com",
+                    "description": "user's email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "asd34sdd",
+                    "description": "user's password, must have at least six characters"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "example": "asd34sdd",
+                    "description": "user's password confirmation, must be equal to the password"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "customer",
+                    "description": "user's type",
+                    "enum": [
+                      "customer",
+                      "retailer"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "description": "register new user",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "Error message"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "description": "user login request body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "aa@gmail.com",
+                    "description": "user's email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "asd34sdd",
+                    "description": "user's password, must have at least six characters"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "description": "Access Token for authenticated user"
+                        },
+                        "expires_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Date and time when the token expires"
+                        },
+                        "expires_in": {
+                          "type": "integer",
+                          "description": "Expiry time of the token in seconds",
+                          "example": 86400
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message",
+                    "internalCode"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    },
+                    "internalCode": {
+                      "type": "integer",
+                      "description": "Internal error code"
+                    },
+                    "additionalInfo": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "description": "Additional information about the error (example the email that wasn't found)"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

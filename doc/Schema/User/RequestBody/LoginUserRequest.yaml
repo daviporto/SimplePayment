@@ -1,0 +1,17 @@
+description: user login request body
+content:
+  application/json:
+    schema:
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: aa@gmail.com
+          description: user's email
+        password:
+          type: string
+          example: asd34sdd
+          description: user's password, must have at least six characters
+      type: object

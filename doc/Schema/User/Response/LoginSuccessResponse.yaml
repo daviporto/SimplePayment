@@ -1,0 +1,20 @@
+description: Logged in successfully
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+              description: Access Token for authenticated user
+            expires_at:
+              type: string
+              format: date-time
+              description: Date and time when the token expires
+            expires_in:
+              type: integer
+              description: Expiry time of the token in seconds
+              example: 86400

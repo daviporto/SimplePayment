@@ -1,0 +1,35 @@
+description: register user request body
+content:
+  application/json:
+    schema:
+      required:
+        - name
+        - email
+        - password
+        - password_confirmation
+        - type
+      properties:
+        name:
+          type: string
+          example: Name
+          description: user's name
+        email:
+          type: string
+          example: aa@gmail.com
+          description: user's email
+        password:
+          type: string
+          example: asd34sdd
+          description: user's password, must have at least six characters
+        password_confirmation:
+          type: string
+          example: asd34sdd
+          description: user's password confirmation, must be equal to the password
+        type:
+          type: string
+          example: customer
+          description: user's type
+          enum:
+            - customer
+            - retailer
+      type: object

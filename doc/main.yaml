@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: SimplePayment
+  description: SimplePayment
+  version: 1.0.0
+servers:
+  - url: http://localhost:9511/api
+components:
+  securitySchemes:
+    BearerAuth:
+      $ref: 'Schema/Common/Header/AuthorizationHeader.yaml'
+
+paths:
+  /user/register:
+    post:
+      tags:
+        - User
+      requestBody:
+        $ref: './Schema/User/RequestBody/RegisterUserRequest.yaml'
+      description: register new user
+      responses:
+        '204':
+          description: No Content
+        '422':
+          $ref: './Schema/Common/Response/ValidationErrorResponse.yaml'
+  /user/login:
+    post:
+      tags:
+        - User
+      requestBody:
+        $ref: './Schema/User/RequestBody/LoginUserRequest.yaml'
+      responses:
+        '200':
+          $ref: './Schema/User/Response/LoginSuccessResponse.yaml'
+        422:
+          $ref: './Schema/User/Response/LoginUnprocessableEntityResponse.yaml'
