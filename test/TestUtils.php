@@ -1,6 +1,6 @@
 <?php
 
-namespace HyperfTest;
+namespace Test;
 
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Database\Model\Factory;

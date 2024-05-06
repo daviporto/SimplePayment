@@ -1,5 +1,5 @@
 <?php
-namespace HyperfTest;
+namespace Test;
 
 use Faker\Factory as FakerFactory;
 use Hyperf\Database\Model\Factory;

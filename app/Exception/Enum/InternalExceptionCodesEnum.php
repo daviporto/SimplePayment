@@ -9,6 +9,7 @@ enum InternalExceptionCodesEnum: int
     case WrongPassword = 1002;
     case EmailAlreadyExists = 1003;
     case CpfAlreadyExists = 1004;
+    case EmailNotFound = 1005;
 
     case MissingAuthenticationHeader = 2003;
     case EmptyAuthenticationHeader = 2004;

@@ -9,9 +9,10 @@ use App\Service\TransactionServiceInterface;
 use App\Service\UserService;
 use App\Service\UserServiceInterface;
 use Hyperf\Database\Model\Factory;
+use Test\FactoryWithFaker;
 
 return [
-    Factory::class => HyperfTest\FactoryWithFaker::class,
+    Factory::class => FactoryWithFaker::class,
     UserServiceInterface::class => UserService::class,
     TokenServiceInterface::class => TokenService::class,
     TransactionServiceInterface::class => TransactionService::class

@@ -9,7 +9,7 @@ use App\Exception\Enum\InternalExceptionMessagesEnum;
 
 class UserTypeNowAllowedException extends AbstractSimplePaymentException
 {
-    public function __construct(string $type)
+    public function __construct(?string $type)
     {
         parent::__construct(
             InternalExceptionMessagesEnum::UserTyneNotAvailable->value,

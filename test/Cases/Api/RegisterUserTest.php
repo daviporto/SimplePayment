@@ -1,6 +1,6 @@
 <?php
 
-namespace HyperfTest\Cases\Api;
+namespace Test\Cases\Api;
 
 use App\Domain\User\UserTypeEnum;
 use App\Model\User;

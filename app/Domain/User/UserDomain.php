@@ -4,6 +4,7 @@ namespace App\Domain\User;
 
 use App\Exception\User\CpfAlreadyExistsException;
 use App\Exception\User\EmailAlreadyExistsException;
+use App\Exception\User\EmailNotFoundException;
 use App\Exception\User\PasswordMustHaveAtLeastSixCharactersException;
 use App\Exception\User\UserTypeNowAllowedException;
 use App\Exception\User\WrongPasswordException;
@@ -56,6 +57,10 @@ class UserDomain
 
     public function load(string $email): self
     {
+        if(!$this->repository->emailExists($email)){
+            throw new EmailNotFoundException($email);
+        }
+
         $data = $this->repository->findByEmail($email);
 
         return $this->fromArray($data);
@@ -67,9 +72,11 @@ class UserDomain
         return $this->fullName;
     }
 
-    public function setFullName(string $fullName): void
+    public function setFullName(string $fullName): self
     {
         $this->fullName = $fullName;
+
+        return $this;
     }
 
     public function getEmail(): string
@@ -87,13 +94,15 @@ class UserDomain
         return $this->password ?: null;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(string $password): self
     {
         if (strlen($password) < 6) {
             throw new PasswordMustHaveAtLeastSixCharactersException($password);
         }
 
         $this->password = $password;
+
+        return $this;
     }
 
     public function getType(): UserTypeEnum
