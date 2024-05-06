@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Domain\Abstract\AbstractRepository;
 use App\Domain\User\UserDomain;
 use App\Domain\User\UserRepository;
 use Exception;
@@ -17,7 +16,8 @@ class UserService implements UserServiceInterface
     public function register(array $data): void
     {
         $repository = make(UserRepository::class);
-        AbstractRepository::beginTransaction();
+        $transactionService = make(TransactionServiceInterface::class);
+        $transactionService->begin();
 
         try {
             make(UserDomain::class, [$repository])
@@ -25,23 +25,25 @@ class UserService implements UserServiceInterface
                 ->hashPassword()
                 ->register();
 
-            AbstractRepository::commitTransaction();
+            $transactionService->commit();
         } catch (Exception $e) {
             make(StdoutLoggerInterface::class)->error($e->getMessage());
 
-            AbstractRepository::rollbackTransaction();
-
+            $transactionService->rollback();
             throw $e;
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function login(array $data): array
     {
         $repository = make(UserRepository::class);
-        AbstractRepository::beginTransaction();
+        $transactionService = make(TransactionServiceInterface::class);
 
         try {
-          $user = make(UserDomain::class, [$repository])
+            $user = make(UserDomain::class, [$repository])
                 ->load($data['email'])
                 ->validatePassword($data['password']);
 
@@ -50,13 +52,13 @@ class UserService implements UserServiceInterface
 
             $token = $tokenService->generateToken($user->getId());
 
-            return['token' => $token];
+            $transactionService->commit();
 
-            AbstractRepository::commitTransaction();
+            return ['token' => $token];
         } catch (Exception $e) {
             make(StdoutLoggerInterface::class)->error($e->getMessage());
 
-            AbstractRepository::rollbackTransaction();
+            $transactionService->rollback();
 
             throw $e;
         }

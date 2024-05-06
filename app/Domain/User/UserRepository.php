@@ -2,10 +2,9 @@
 
 namespace App\Domain\User;
 
-use App\Domain\Abstract\AbstractRepository;
 use App\Model\User;
 
-class UserRepository extends AbstractRepository implements UserRepositoryInterface
+class UserRepository implements UserRepositoryInterface
 {
     public function save(array $data): void
     {
