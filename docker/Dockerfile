@@ -30,8 +30,6 @@ RUN set -ex \
 RUN apk add php82-xdebug
 
 WORKDIR /var/www
-
 COPY .. /var/www
 
 EXPOSE 9555
-
