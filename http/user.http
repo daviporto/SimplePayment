@@ -1,0 +1,36 @@
+POST http://localhost:9511/api/user/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "test",
+  "password": "{{password}}",
+  "password_confirmation": "{{password}}",
+  "email": "{{email}}",
+  "cpf": "12385678901",
+  "type": "customer"
+}
+
+###
+
+POST http://localhost:9511/api/user/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "password": "{{password}}",
+  "email": "{{email}}"
+}
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    client.global.set("token", response.body.data.token);
+ %}
+
+
+###
+
+GET http://localhost:9511/test-authenticated
+Accept: application/json
+Authorization: Bearer {{token}}
