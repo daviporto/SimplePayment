@@ -1,11 +1,11 @@
 <?php
 
-namespace HyperfTest\Cases\Api;
+namespace Test\Cases\Api;
 
 use App\Model\User;
 use Hyperf\Testing\TestCase;
-use HyperfTest\TestUtils;
 use Swoole\Http\Status;
+use Test\TestUtils;
 
 class LoginTest extends TestCase
 {
@@ -20,9 +20,11 @@ class LoginTest extends TestCase
         $this->post(self::ROUTE, $payload)
             ->assertStatus(Status::OK)
             ->assertJsonStructure([
-                'token',
-                'expires_at',
-                'expires_in',
+                'data' => [
+                    'token',
+                    'expires_at',
+                    'expires_in',
+                ]
             ]);
     }
 

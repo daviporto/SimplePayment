@@ -8,7 +8,6 @@ services:
     tty: true
     build: ./docker
     volumes:
-      - /var/www/vendor
       - ./:/var/www/
       - ./docker/xdebug.ini:/etc/php82/conf.d/50_xdebug.ini
     environment:
