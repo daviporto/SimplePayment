@@ -10,9 +10,12 @@ enum InternalExceptionMessagesEnum: string
     case EmailAlreadyExists = 'email already exists';
     case CpfAlreadyExists = 'cpf already exists';
     case EmailNotFound = 'email not found';
+    case UserNotLoadedException = 'user not loaded';
 
     case MissingAuthenticationHeader = 'missing authentication header';
     case EmptyAuthenticationHeader = 'empty authentication header';
     case InvalidToken = 'invalid token';
     case TokenExpired = 'token expired';
+
+    case InvalidWalletStatus = 'invalid wallet status';
 }

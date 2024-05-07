@@ -4,6 +4,7 @@ namespace Test\Cases\Api;
 
 use App\Domain\User\UserTypeEnum;
 use App\Model\User;
+use App\Model\Wallet;
 use Faker\Factory;
 use Hyperf\Testing\TestCase;
 use Swoole\Http\Status;
@@ -21,6 +22,10 @@ class RegisterUserTest extends TestCase
             ->assertStatus(Status::NO_CONTENT);
 
         $this->assertTrue(User::where('email', $payload['email'])->exists());
+
+        $user = User::where('email', $payload['email'])->first();
+
+        $this->assertTrue(Wallet::where('user_id', $user->id)->exists());
     }
 
     private function getPayload(): array

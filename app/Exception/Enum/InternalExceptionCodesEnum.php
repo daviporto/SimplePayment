@@ -10,9 +10,12 @@ enum InternalExceptionCodesEnum: int
     case EmailAlreadyExists = 1003;
     case CpfAlreadyExists = 1004;
     case EmailNotFound = 1005;
+    case UserNotLoadedException = 1006;
 
     case MissingAuthenticationHeader = 2003;
     case EmptyAuthenticationHeader = 2004;
     case InvalidToken = 2005;
     case TokenExpired = 2006;
+
+    case InvalidWalletStatus = 3000;
 }
