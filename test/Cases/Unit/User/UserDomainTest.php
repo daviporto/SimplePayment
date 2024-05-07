@@ -1,25 +1,26 @@
 <?php
 
-namespace Test\Cases\Unit;
+namespace Test\Cases\Unit\User;
 
 use App\Domain\User\UserDomain;
+use App\Domain\User\UserDomainInterface;
 use App\Domain\User\UserTypeEnum;
 use App\Exception\User\CpfAlreadyExistsException;
 use App\Exception\User\EmailAlreadyExistsException;
 use App\Exception\User\EmailNotFoundException;
 use App\Exception\User\PasswordMustHaveAtLeastSixCharactersException;
+use App\Exception\User\UserNotLoadedException;
 use App\Exception\User\UserTypeNowAllowedException;
 use App\Exception\User\WrongPasswordException;
 use Faker\Factory;
 use Faker\Generator;
 use Hyperf\Stringable\Str;
 use PHPUnit\Framework\TestCase;
-use Test\Cases\Unit\Repository\UserTestRepository;
 use function Hyperf\Support\make;
 
 class UserDomainTest extends TestCase
 {
-    private UserDomain $domain;
+    private UserDomainInterface $domain;
     private Generator $faker;
 
     public function getDefaultData(): array
@@ -135,9 +136,16 @@ class UserDomainTest extends TestCase
     public function testLoadSuccess()
     {
         $email = 'exists';
-        $this->domain->load($email);
+        $loadedUser = $this->domain->load($email);
 
-        $this->assertSame($email, $this->domain->getEmail());
-        $this->assertNotEmpty($this->domain->getId());
+        $this->assertSame($email, $loadedUser->getEmail());
+        $this->assertNotEmpty($loadedUser->getId());
+    }
+
+    public function testGetDefaultBalanceOnUnloadedUser()
+    {
+        $this->expectException(UserNotLoadedException::class);
+
+        $this->domain->getInitialBalance();
     }
 }

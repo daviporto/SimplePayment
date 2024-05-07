@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Cases\Unit\Repository;
+namespace Test\Cases\Unit\User;
 
 use App\Domain\User\UserRepositoryInterface;
 use App\Domain\User\UserTypeEnum;
