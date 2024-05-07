@@ -3,7 +3,11 @@
 namespace App\Service;
 
 use App\Domain\User\UserDomain;
+use App\Domain\User\UserDomainInterface;
 use App\Domain\User\UserRepository;
+use App\Domain\Wallet\WalletDomain;
+use App\Domain\Wallet\WalletRepository;
+use App\Domain\Wallet\WalletRepositoryInterface;
 use Exception;
 use Hyperf\Contract\StdoutLoggerInterface;
 use function Hyperf\Support\make;
@@ -24,6 +28,11 @@ class UserService implements UserServiceInterface
                 ->fromArray($data)
                 ->hashPassword()
                 ->register();
+
+            $user = make(UserDomain::class, [$repository])
+                ->load($data['email']);
+
+            $this->createWallet($user);
 
             $transactionService->commit();
         } catch (Exception $e) {
@@ -47,7 +56,6 @@ class UserService implements UserServiceInterface
                 ->load($data['email'])
                 ->validatePassword($data['password']);
 
-
             $tokenService = make(TokenServiceInterface::class);
 
             $token = $tokenService->generateToken($user->getId());
@@ -62,5 +70,11 @@ class UserService implements UserServiceInterface
 
             throw $e;
         }
+    }
+
+    private function createWallet(UserDomainInterface $user): void
+    {
+        make(WalletDomain::class, [make(WalletRepository::class)])
+            ->createWallet($user->getId(), $user->getInitialBalance());
     }
 }

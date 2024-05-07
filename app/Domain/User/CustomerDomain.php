@@ -6,11 +6,10 @@ use App\Exception\User\CpfAlreadyExistsException;
 use App\Exception\User\EmailAlreadyExistsException;
 use App\Exception\User\EmailNotFoundException;
 use App\Exception\User\PasswordMustHaveAtLeastSixCharactersException;
-use App\Exception\User\UserNotLoadedException;
 use App\Exception\User\UserTypeNowAllowedException;
 use App\Exception\User\WrongPasswordException;
 
-class UserDomain implements UserDomainInterface
+class CustomerDomain
 {
     private string $fullName;
     private string $email;
@@ -56,7 +55,7 @@ class UserDomain implements UserDomainInterface
         return $data;
     }
 
-    public function load(string $email): UserDomainInterface
+    public function load(string $email): self
     {
         if(!$this->repository->emailExists($email)){
             throw new EmailNotFoundException($email);
@@ -64,15 +63,9 @@ class UserDomain implements UserDomainInterface
 
         $data = $this->repository->findByEmail($email);
 
-        $user = UserFactory::createUser($data['type'], $this->repository);
-
-        return $user->fromArray($data);
+        return $this->fromArray($data);
     }
 
-    public function getInitialBalance(): float
-    {
-        throw new UserNotLoadedException();
-    }
 
     public function getFullName(): string
     {
