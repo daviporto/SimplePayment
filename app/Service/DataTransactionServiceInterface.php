@@ -2,10 +2,9 @@
 
 namespace App\Service;
 
-interface TransactionServiceInterface
+interface DataTransactionServiceInterface
 {
     function begin(): void;
-
     function commit(): void;
     function rollback(): void;
 }
