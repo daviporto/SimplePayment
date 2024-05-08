@@ -11,7 +11,9 @@ class TransactionDomain
     private int $payeeId;
     private float $value;
 
-    public function __construct(private TransactionRepositoryInterface $repository)
+    private ?int $id;
+
+    public function __construct(private readonly TransactionRepositoryInterface $repository)
     {
     }
 
@@ -22,20 +24,22 @@ class TransactionDomain
         return $this;
     }
 
-    private function toArray(): array
+    public function toArray(): array
     {
         return [
+            'id' => $this->getId(),
+            'value' => $this->getValue(),
             'payer_id' => $this->getPayerId(),
             'payee_id' => $this->getPayeeId(),
-            'value' => $this->getValue()
         ];
     }
 
-    private function fromArray(array $data): self
+    public function fromArray(array $data): self
     {
         return $this->setPayerId($data['payer_id'])
             ->setPayeeId($data['payee_id'])
-            ->setValue($data['value']);
+            ->setValue($data['value'])
+            ->setId($data['id'] ?? null);
     }
 
     public function getPayerId(): int
@@ -69,11 +73,23 @@ class TransactionDomain
 
     public function setValue(float $value): TransactionDomain
     {
-        if($value < self::MIN_TRANSACTION_VALUE) {
+        if ($value < self::MIN_TRANSACTION_VALUE) {
             throw new MinAllowedTransactionValueException();
         }
 
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): TransactionDomain
+    {
+        $this->id = $id;
 
         return $this;
     }
