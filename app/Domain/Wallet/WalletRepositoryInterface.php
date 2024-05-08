@@ -4,5 +4,9 @@ namespace App\Domain\Wallet;
 
 interface WalletRepositoryInterface
 {
-    public function save(array $toArray): void;
+    function save(array $toArray): void;
+
+    function loadFromOwnerId(int $ownerId): array;
+
+    function updateBalance(int $id, float $balance): void;
 }

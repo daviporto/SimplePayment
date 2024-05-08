@@ -56,7 +56,7 @@ class UserDomain implements UserDomainInterface
         return $data;
     }
 
-    public function load(string $email): UserDomainInterface
+    public function loadByEmail(string $email): UserDomainInterface
     {
         if(!$this->repository->emailExists($email)){
             throw new EmailNotFoundException($email);
@@ -69,7 +69,25 @@ class UserDomain implements UserDomainInterface
         return $user->fromArray($data);
     }
 
+    public function loadById(int $id): UserDomainInterface
+    {
+        if(!$this->repository->idExists($id)){
+            throw new EmailNotFoundException($id);
+        }
+
+        $data = $this->repository->findById($id);
+
+        $user = UserFactory::createUser($data['type'], $this->repository);
+
+        return $user->fromArray($data);
+    }
+
     public function getInitialBalance(): float
+    {
+        throw new UserNotLoadedException();
+    }
+
+    public function canExecutePayment(int $requesterId): self
     {
         throw new UserNotLoadedException();
     }

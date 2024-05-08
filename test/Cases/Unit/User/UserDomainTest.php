@@ -130,13 +130,13 @@ class UserDomainTest extends TestCase
     {
         $this->expectException(EmailNotFoundException::class);
 
-        $this->domain->load('nonExistentEmail@gmail.com');
+        $this->domain->loadByEmail('nonExistentEmail@gmail.com');
     }
 
     public function testLoadSuccess()
     {
         $email = 'exists';
-        $loadedUser = $this->domain->load($email);
+        $loadedUser = $this->domain->loadByEmail($email);
 
         $this->assertSame($email, $loadedUser->getEmail());
         $this->assertNotEmpty($loadedUser->getId());

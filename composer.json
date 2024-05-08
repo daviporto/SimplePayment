@@ -18,6 +18,7 @@
         "hyperf/memory": "~3.1.0",
         "hyperf/process": "~3.1.0",
         "hyperf/resource": "^3.1",
+        "hyperf/retry": "^3.1",
         "hyperf/validation": "^3.1"
     },
     "require-dev": {

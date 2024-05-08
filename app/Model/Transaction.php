@@ -16,7 +16,7 @@ use Hyperf\DbConnection\Model\Model as BaseModel;
  * */
 class Transaction extends BaseModel
 {
-    protected ?string $table = 'wallets';
+    protected ?string $table = 'transactions';
 
     protected array $fillable = [
         'payer_id',

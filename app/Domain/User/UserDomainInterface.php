@@ -8,7 +8,9 @@ interface UserDomainInterface
 
     function toArray(): array;
 
-    function load(string $email): self;
+    function loadByEmail(string $email): self;
+
+    function loadById(int $id): self;
 
     function getFullName(): string;
 
@@ -39,4 +41,7 @@ interface UserDomainInterface
     function getId(): int;
 
     function getInitialBalance(): float;
+
+    function canExecutePayment(int $requesterId): UserDomainInterface;
+
 }

@@ -2,12 +2,15 @@
 
 namespace App\Domain\Wallet;
 
+use App\Exception\Wallet\InsufficientBalanceException;
 use App\Exception\Wallet\InvalidWalletStatusException;
+use App\Exception\Wallet\OnlyActiveWalletCanDeposit;
+use App\Exception\Wallet\OnlyActiveWalletCanWithdraw;
 
 class WalletDomain
 {
-    private ?int $Id;
-    private int $userId;
+    private ?int $id;
+    private int $ownerId;
     private float $balance;
     private WalletStatusEnum $status;
 
@@ -17,7 +20,7 @@ class WalletDomain
 
     public function createWallet(int $userId, float $initialBalance): WalletDomain
     {
-        $this->userId = $userId;
+        $this->ownerId = $userId;
         $this->balance = $initialBalance;
         $this->status = WalletStatusEnum::ACTIVE;
 
@@ -26,35 +29,88 @@ class WalletDomain
         return $this;
     }
 
+    public function loadByOwnerId(int $ownerId): self
+    {
+        $data = $this->repository->loadFromOwnerId($ownerId);
+
+        return $this->fromArray($data);
+    }
+
     private function toArray(): array
     {
         return [
-            'user_id' => $this->userId,
+            'owner_id' => $this->ownerId,
             'status' => $this->status->value,
             'balance' => $this->balance,
         ];
     }
 
-    public function getId(): ?int
+    private function fromArray($data): self
     {
-        return $this->Id;
-    }
-
-    public function setId(?int $Id): WalletDomain
-    {
-        $this->Id = $Id;
+        $this->setId($data['id']);
+        $this->setOwnerId($data['owner_id']);
+        $this->setBalance($data['balance']);
+        $this->setStatus($data['status']);
 
         return $this;
     }
 
-    public function getUserId(): int
+
+    public function canTransfer(float $value): self
     {
-        return $this->userId;
+        if ($this->balance < $value) {
+            throw new InsufficientBalanceException($this->balance);
+        }
+
+        return $this;
     }
 
-    public function setUserId(int $userId): WalletDomain
+    public function withdraw(float $value): self
     {
-        $this->userId = $userId;
+        if ($this->status !== WalletStatusEnum::ACTIVE) {
+            throw new OnlyActiveWalletCanWithdraw();
+        }
+
+        $this->setBalance($this->getBalance() - $value);
+
+        $this->repository->updateBalance($this->getId(), $this->getBalance());
+
+        return $this;
+    }
+
+    public function deposit(float $value): self
+    {
+        if ($this->status !== WalletStatusEnum::ACTIVE) {
+            throw new OnlyActiveWalletCanDeposit();
+        }
+
+        $this->setBalance($this->getBalance() + $value);
+
+        $this->repository->updateBalance($this->getId(), $this->getBalance());
+
+        return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): WalletDomain
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getOwnerId(): int
+    {
+        return $this->ownerId;
+    }
+
+    public function setOwnerId(int $ownerId): WalletDomain
+    {
+        $this->ownerId = $ownerId;
 
         return $this;
     }

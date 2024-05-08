@@ -11,6 +11,9 @@ enum InternalExceptionCodesEnum: int
     case CpfAlreadyExists = 1004;
     case EmailNotFound = 1005;
     case UserNotLoadedException = 1006;
+    case OnlyOwnUserCanExecutePayment = 1007;
+    case RetailerCantExecutePayment = 1008;
+    case UserIdNotFound = 1009;
 
     case MissingAuthenticationHeader = 2003;
     case EmptyAuthenticationHeader = 2004;
@@ -18,4 +21,8 @@ enum InternalExceptionCodesEnum: int
     case TokenExpired = 2006;
 
     case InvalidWalletStatus = 3000;
+    case InsufficientBalance = 3001;
+    case UnauthorizedTransaction = 3002;
+    case OnlyActiveWalletCanWithdraw = 3003;
+    case OnlyActiveWalletCanDeposit = 3004;
 }
