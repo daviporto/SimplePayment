@@ -20,7 +20,7 @@ class UserService implements UserServiceInterface
     public function register(array $data): void
     {
         $repository = make(UserRepository::class);
-        $transactionService = make(TransactionServiceInterface::class);
+        $transactionService = make(DataTransactionServiceInterface::class);
         $transactionService->begin();
 
         try {
@@ -30,7 +30,7 @@ class UserService implements UserServiceInterface
                 ->register();
 
             $user = make(UserDomain::class, [$repository])
-                ->load($data['email']);
+                ->loadByEmail($data['email']);
 
             $this->createWallet($user);
 
@@ -49,11 +49,11 @@ class UserService implements UserServiceInterface
     public function login(array $data): array
     {
         $repository = make(UserRepository::class);
-        $transactionService = make(TransactionServiceInterface::class);
+        $transactionService = make(DataTransactionServiceInterface::class);
 
         try {
             $user = make(UserDomain::class, [$repository])
-                ->load($data['email'])
+                ->loadByEmail($data['email'])
                 ->validatePassword($data['password']);
 
             $tokenService = make(TokenServiceInterface::class);

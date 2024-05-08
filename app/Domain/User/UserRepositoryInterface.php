@@ -4,11 +4,15 @@ namespace App\Domain\User;
 
 interface UserRepositoryInterface
 {
-    public function save(array $data): void;
+    function save(array $data): void;
 
-    public function findByEmail(string $email): array;
+    function emailExists(string $email): bool;
 
-    public function emailExists(string $email): bool;
+    function findByEmail(string $email): array;
 
-    public function cpfExists(string $cpf): bool;
+    function idExists(int $id): bool;
+
+    function findById(int $id): array;
+
+    function cpfExists(string $cpf): bool;
 }

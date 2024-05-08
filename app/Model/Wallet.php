@@ -19,7 +19,7 @@ class Wallet extends BaseModel
     protected ?string $table = 'wallets';
 
     protected array $fillable = [
-        'user_id',
+        'owner_id',
         'balance',
         'status'
     ];

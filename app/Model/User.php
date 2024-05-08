@@ -8,6 +8,7 @@ use Hyperf\DbConnection\Model\Model as BaseModel;
 
 
 /**
+ * @property int $id
  * @property string $name
  * @property string $email
  * @property string $password

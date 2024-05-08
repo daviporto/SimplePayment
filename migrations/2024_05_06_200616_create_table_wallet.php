@@ -18,8 +18,8 @@ class CreateTableWallet extends Migration
                 WalletStatusEnum::BLOCKED->value,
             ]);
 
-            $table->unsignedBigInteger('user_id')->unique();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('owner_id')->unique();
+            $table->foreign('owner_id')->references('id')->on('users');
 
             $table->datetimes();
         });

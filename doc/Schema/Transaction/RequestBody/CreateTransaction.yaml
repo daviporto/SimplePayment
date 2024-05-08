@@ -1,0 +1,20 @@
+content:
+  application/json:
+    schema:
+      required:
+        - payer
+        - payee
+        - value
+      properties:
+        payer:
+          type: integer
+          description: The ID of the payer
+        payee:
+          type: integer
+          description: The ID of the payee
+        value:
+          type: number
+          format: float
+          description: The value of the transaction
+          example: 100.00
+          minimum: 0.01

@@ -9,17 +9,20 @@ use App\Exception\User\CpfAlreadyExistsException;
 use App\Exception\User\EmailAlreadyExistsException;
 use App\Exception\User\EmailNotFoundException;
 use App\Exception\User\PasswordMustHaveAtLeastSixCharactersException;
+use App\Exception\User\UserIdNotFoundException;
 use App\Exception\User\UserNotLoadedException;
 use App\Exception\User\UserTypeNowAllowedException;
 use App\Exception\User\WrongPasswordException;
 use Faker\Factory;
 use Faker\Generator;
 use Hyperf\Stringable\Str;
+use PHPStan\BetterReflection\Reflector\Exception\IdentifierNotFound;
 use PHPUnit\Framework\TestCase;
 use function Hyperf\Support\make;
 
 class UserDomainTest extends TestCase
 {
+    const DEFAULT_PASSWORD = '123456';
     private UserDomainInterface $domain;
     private Generator $faker;
 
@@ -28,7 +31,7 @@ class UserDomainTest extends TestCase
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->email(),
-            'password' => '123456',
+            'password' => self::DEFAULT_PASSWORD,
             'cpf' => 1 . $this->faker->unique()->numerify('##########'),
             'type' => $this->faker->randomElement(UserTypeEnum::getTypes())
         ];
@@ -79,10 +82,10 @@ class UserDomainTest extends TestCase
     {
         $this
             ->domain
-            ->setPassword('123456')
+            ->setPassword(self::DEFAULT_PASSWORD)
             ->hashPassword();
 
-        $this->domain->validatePassword('123456');
+        $this->domain->validatePassword(self::DEFAULT_PASSWORD);
 
         $this->assertNotEmpty($this->domain->getPassword());
     }
@@ -91,7 +94,7 @@ class UserDomainTest extends TestCase
     {
         $this
             ->domain
-            ->setPassword('123456')
+            ->setPassword(self::DEFAULT_PASSWORD)
             ->hashPassword();
 
         $this->expectException(WrongPasswordException::class);
@@ -126,19 +129,35 @@ class UserDomainTest extends TestCase
         $this->assertNotEmpty($this->domain->getEmail());
     }
 
-    public function testLoadNonExistentEmail()
+    public function testLoadByEmailNonExistentEmail()
     {
         $this->expectException(EmailNotFoundException::class);
 
-        $this->domain->load('nonExistentEmail@gmail.com');
+        $this->domain->loadByEmail('nonExistentEmail@gmail.com');
     }
 
-    public function testLoadSuccess()
+    public function testLoadByEmailSuccess()
     {
         $email = 'exists';
-        $loadedUser = $this->domain->load($email);
+        $loadedUser = $this->domain->loadByEmail($email);
 
         $this->assertSame($email, $loadedUser->getEmail());
+        $this->assertNotEmpty($loadedUser->getId());
+    }
+
+    public function testLoadByIdNonExistentId()
+    {
+        $this->expectException(UserIdNotFoundException::class);
+
+        $this->domain->loadById(1);
+    }
+
+    public function testLoadByIdSuccess()
+    {
+        $id = 2;
+        $loadedUser = $this->domain->loadById($id);
+
+        $this->assertSame($id, $loadedUser->getid());
         $this->assertNotEmpty($loadedUser->getId());
     }
 
@@ -147,5 +166,12 @@ class UserDomainTest extends TestCase
         $this->expectException(UserNotLoadedException::class);
 
         $this->domain->getInitialBalance();
+    }
+
+    public function testCanExecutePayment()
+    {
+        $this->expectException(UserNotLoadedException::class);
+
+        $this->domain->canExecutePayment(1);
     }
 }

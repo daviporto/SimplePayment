@@ -4,8 +4,5 @@ namespace App\Service;
 
 interface TransactionServiceInterface
 {
-    function begin(): void;
-
-    function commit(): void;
-    function rollback(): void;
+    public function create(array $data, int $requesterId): void;
 }

@@ -8,7 +8,9 @@ interface UserDomainInterface
 
     function toArray(): array;
 
-    function load(string $email): self;
+    function loadByEmail(string $email): self;
+
+    function loadById(int $id): self;
 
     function getFullName(): string;
 
@@ -24,11 +26,11 @@ interface UserDomainInterface
 
     function getType(): UserTypeEnum;
 
-    function setType(UserTypeEnum|string $type): void;
+    function setType(UserTypeEnum|string $type): UserDomainInterface;
 
     function getCpf(): string;
 
-    function setCpf(string $cpf): void;
+    function setCpf(string $cpf): UserDomainInterface;
 
     function register(): void;
 
@@ -39,4 +41,7 @@ interface UserDomainInterface
     function getId(): int;
 
     function getInitialBalance(): float;
+
+    function canExecutePayment(int $requesterId): UserDomainInterface;
+
 }

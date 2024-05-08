@@ -199,6 +199,67 @@
           }
         }
       }
+    },
+    "/tranfer": {
+      "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "tags": [
+          "Transfer"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "payer",
+                  "payee",
+                  "value"
+                ],
+                "properties": {
+                  "payer": {
+                    "type": "integer",
+                    "description": "The ID of the payer"
+                  },
+                  "payee": {
+                    "type": "integer",
+                    "description": "The ID of the payee"
+                  },
+                  "value": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "The value of the transaction",
+                    "example": 100,
+                    "minimum": 0.01
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "Error message"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

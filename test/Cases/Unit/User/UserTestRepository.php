@@ -12,7 +12,7 @@ class UserTestRepository implements UserRepositoryInterface
 
     public function save(array $data): void
     {
-
+        // test method
     }
 
     public function findByEmail(string $email): array
@@ -37,5 +37,24 @@ class UserTestRepository implements UserRepositoryInterface
     public function cpfExists(string $cpf): bool
     {
         return ((int)substr($cpf, 0, 1)) % 2 == 0;
+    }
+
+    public function idExists(int $id): bool
+    {
+        return $id % 2 == 0;
+    }
+
+    public  function findById(int $id): array
+    {
+        $faker = make(Factory::class)->create();
+
+        return [
+            'id' => $id,
+            'email' => $faker->unique()->email(),
+            'name' => $faker->name(),
+            'password' => $faker->password(),
+            'cpf' => 1 . $faker->unique()->numerify('##########'),
+            'type' => $faker->randomElement(UserTypeEnum::getTypes())
+        ];
     }
 }

@@ -34,3 +34,17 @@ paths:
           $ref: './Schema/User/Response/LoginSuccessResponse.yaml'
         422:
           $ref: './Schema/User/Response/LoginUnprocessableEntityResponse.yaml'
+
+  /tranfer:
+    post:
+      security:
+            - BearerAuth: []
+      tags:
+        - Transfer
+      requestBody:
+        $ref: './Schema/Transaction/RequestBody/CreateTransaction.yaml'
+      responses:
+        '204':
+            description: No Content
+        422:
+          $ref: './Schema/Common/Response/ValidationErrorResponse.yaml'
