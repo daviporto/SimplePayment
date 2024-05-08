@@ -44,4 +44,5 @@ interface UserDomainInterface
 
     function canExecutePayment(int $requesterId): UserDomainInterface;
 
+    function getUsers(): array;
 }

@@ -23,9 +23,10 @@ class RegisterUserTest extends TestCase
 
         $this->assertTrue(User::where('email', $payload['email'])->exists());
 
+        /** @var User $user */
         $user = User::where('email', $payload['email'])->first();
 
-        $this->assertTrue(Wallet::where('user_id', $user->id)->exists());
+        $this->assertTrue(Wallet::where('owner_id', $user->id)->exists());
     }
 
     private function getPayload(): array

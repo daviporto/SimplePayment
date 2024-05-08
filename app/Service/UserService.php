@@ -77,4 +77,13 @@ class UserService implements UserServiceInterface
         make(WalletDomain::class, [make(WalletRepository::class)])
             ->createWallet($user->getId(), $user->getInitialBalance());
     }
+
+    public function getUsers(): array
+    {
+        $users =  make(UserDomain::class, [make(UserRepository::class)])->getUsers();
+
+        return array_map(function(UserDomainInterface $user){
+            return $user->toArray();
+        }, $users);
+    }
 }

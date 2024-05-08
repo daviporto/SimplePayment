@@ -7,4 +7,6 @@ interface UserServiceInterface
     function register(array $data): void;
 
     function login(array $data): array;
+
+    function getUsers(): array;
 }

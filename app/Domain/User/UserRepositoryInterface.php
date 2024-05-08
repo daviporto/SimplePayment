@@ -15,4 +15,6 @@ interface UserRepositoryInterface
     function findById(int $id): array;
 
     function cpfExists(string $cpf): bool;
+
+    public function findAll(): array;
 }
