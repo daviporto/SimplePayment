@@ -9,12 +9,14 @@ use App\Exception\User\CpfAlreadyExistsException;
 use App\Exception\User\EmailAlreadyExistsException;
 use App\Exception\User\EmailNotFoundException;
 use App\Exception\User\PasswordMustHaveAtLeastSixCharactersException;
+use App\Exception\User\UserIdNotFoundException;
 use App\Exception\User\UserNotLoadedException;
 use App\Exception\User\UserTypeNowAllowedException;
 use App\Exception\User\WrongPasswordException;
 use Faker\Factory;
 use Faker\Generator;
 use Hyperf\Stringable\Str;
+use PHPStan\BetterReflection\Reflector\Exception\IdentifierNotFound;
 use PHPUnit\Framework\TestCase;
 use function Hyperf\Support\make;
 
@@ -126,14 +128,14 @@ class UserDomainTest extends TestCase
         $this->assertNotEmpty($this->domain->getEmail());
     }
 
-    public function testLoadNonExistentEmail()
+    public function testLoadByEmailNonExistentEmail()
     {
         $this->expectException(EmailNotFoundException::class);
 
         $this->domain->loadByEmail('nonExistentEmail@gmail.com');
     }
 
-    public function testLoadSuccess()
+    public function testLoadByEmailSuccess()
     {
         $email = 'exists';
         $loadedUser = $this->domain->loadByEmail($email);
@@ -142,10 +144,33 @@ class UserDomainTest extends TestCase
         $this->assertNotEmpty($loadedUser->getId());
     }
 
+    public function testLoadByIdNonExistentId()
+    {
+        $this->expectException(UserIdNotFoundException::class);
+
+        $this->domain->loadById(1);
+    }
+
+    public function testLoadByIdSuccess()
+    {
+        $id = 2;
+        $loadedUser = $this->domain->loadById($id);
+
+        $this->assertSame($id, $loadedUser->getid());
+        $this->assertNotEmpty($loadedUser->getId());
+    }
+
     public function testGetDefaultBalanceOnUnloadedUser()
     {
         $this->expectException(UserNotLoadedException::class);
 
         $this->domain->getInitialBalance();
+    }
+
+    public function testCanExecutePayment()
+    {
+        $this->expectException(UserNotLoadedException::class);
+
+        $this->domain->canExecutePayment(1);
     }
 }

@@ -6,6 +6,7 @@ use App\Exception\User\CpfAlreadyExistsException;
 use App\Exception\User\EmailAlreadyExistsException;
 use App\Exception\User\EmailNotFoundException;
 use App\Exception\User\PasswordMustHaveAtLeastSixCharactersException;
+use App\Exception\User\UserIdNotFoundException;
 use App\Exception\User\UserNotLoadedException;
 use App\Exception\User\UserTypeNowAllowedException;
 use App\Exception\User\WrongPasswordException;
@@ -17,7 +18,6 @@ class UserDomain implements UserDomainInterface
     private ?string $password;
     private UserTypeEnum $type;
     private string $cpf;
-
     private ?int $id;
 
     public function __construct(private UserRepositoryInterface $repository)
@@ -72,7 +72,7 @@ class UserDomain implements UserDomainInterface
     public function loadById(int $id): UserDomainInterface
     {
         if(!$this->repository->idExists($id)){
-            throw new EmailNotFoundException($id);
+            throw new UserIdNotFoundException($id);
         }
 
         $data = $this->repository->findById($id);
@@ -119,7 +119,7 @@ class UserDomain implements UserDomainInterface
         return $this->password ?: null;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password): UserDomainInterface
     {
         if (strlen($password) < 6) {
             throw new PasswordMustHaveAtLeastSixCharactersException($password);
@@ -135,7 +135,7 @@ class UserDomain implements UserDomainInterface
         return $this->type;
     }
 
-    public function setType(UserTypeEnum|string $type): void
+    public function setType(UserTypeEnum|string $type): UserDomainInterface
     {
         if ($type instanceof UserTypeEnum) {
             $this->type = $type;
@@ -146,6 +146,8 @@ class UserDomain implements UserDomainInterface
         } else {
             throw new UserTypeNowAllowedException($type);
         }
+
+        return $this;
     }
 
     public function getCpf(): string
@@ -153,9 +155,11 @@ class UserDomain implements UserDomainInterface
         return $this->cpf;
     }
 
-    public function setCpf(string $cpf): void
+    public function setCpf(string $cpf): UserDomainInterface
     {
         $this->cpf = $cpf;
+
+        return $this;
     }
 
     public function register(): void
@@ -190,5 +194,12 @@ class UserDomain implements UserDomainInterface
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): UserDomainInterface
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }

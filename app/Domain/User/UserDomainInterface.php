@@ -26,11 +26,11 @@ interface UserDomainInterface
 
     function getType(): UserTypeEnum;
 
-    function setType(UserTypeEnum|string $type): void;
+    function setType(UserTypeEnum|string $type): UserDomainInterface;
 
     function getCpf(): string;
 
-    function setCpf(string $cpf): void;
+    function setCpf(string $cpf): UserDomainInterface;
 
     function register(): void;
 
