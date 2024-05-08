@@ -9,4 +9,6 @@ interface WalletRepositoryInterface
     function loadFromOwnerId(int $ownerId): array;
 
     function updateBalance(int $id, float $balance): void;
+
+    public function ownerHasWallet(int $ownerId): bool;
 }

@@ -22,6 +22,7 @@ use function Hyperf\Support\make;
 
 class UserDomainTest extends TestCase
 {
+    const DEFAULT_PASSWORD = '123456';
     private UserDomainInterface $domain;
     private Generator $faker;
 
@@ -30,7 +31,7 @@ class UserDomainTest extends TestCase
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->email(),
-            'password' => '123456',
+            'password' => self::DEFAULT_PASSWORD,
             'cpf' => 1 . $this->faker->unique()->numerify('##########'),
             'type' => $this->faker->randomElement(UserTypeEnum::getTypes())
         ];
@@ -81,10 +82,10 @@ class UserDomainTest extends TestCase
     {
         $this
             ->domain
-            ->setPassword('123456')
+            ->setPassword(self::DEFAULT_PASSWORD)
             ->hashPassword();
 
-        $this->domain->validatePassword('123456');
+        $this->domain->validatePassword(self::DEFAULT_PASSWORD);
 
         $this->assertNotEmpty($this->domain->getPassword());
     }
@@ -93,7 +94,7 @@ class UserDomainTest extends TestCase
     {
         $this
             ->domain
-            ->setPassword('123456')
+            ->setPassword(self::DEFAULT_PASSWORD)
             ->hashPassword();
 
         $this->expectException(WrongPasswordException::class);

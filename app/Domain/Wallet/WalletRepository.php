@@ -20,4 +20,9 @@ class WalletRepository implements WalletRepositoryInterface
     {
         Wallet::where('id', $id)->update(['balance' => $balance]);
     }
+
+    public function ownerHasWallet(int $ownerId): bool
+    {
+        return Wallet::where('owner_id', $ownerId)->exists();
+    }
 }

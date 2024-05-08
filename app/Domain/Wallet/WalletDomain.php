@@ -4,8 +4,9 @@ namespace App\Domain\Wallet;
 
 use App\Exception\Wallet\InsufficientBalanceException;
 use App\Exception\Wallet\InvalidWalletStatusException;
-use App\Exception\Wallet\OnlyActiveWalletCanDeposit;
-use App\Exception\Wallet\OnlyActiveWalletCanWithdraw;
+use App\Exception\Wallet\OnlyActiveWalletCanDepositException;
+use App\Exception\Wallet\OnlyActiveWalletCanWithdrawException;
+use App\Exception\Wallet\OwnerDoesntHaveWalletException;
 
 class WalletDomain
 {
@@ -31,21 +32,26 @@ class WalletDomain
 
     public function loadByOwnerId(int $ownerId): self
     {
+        if (!$this->repository->ownerHasWallet($ownerId)) {
+            throw new OwnerDoesntHaveWalletException($ownerId);
+        }
+
         $data = $this->repository->loadFromOwnerId($ownerId);
 
         return $this->fromArray($data);
     }
 
-    private function toArray(): array
+    public function toArray(): array
     {
         return [
+            'id' => $this->id,
             'owner_id' => $this->ownerId,
             'status' => $this->status->value,
             'balance' => $this->balance,
         ];
     }
 
-    private function fromArray($data): self
+    public function fromArray($data): self
     {
         $this->setId($data['id']);
         $this->setOwnerId($data['owner_id']);
@@ -68,7 +74,7 @@ class WalletDomain
     public function withdraw(float $value): self
     {
         if ($this->status !== WalletStatusEnum::ACTIVE) {
-            throw new OnlyActiveWalletCanWithdraw();
+            throw new OnlyActiveWalletCanWithdrawException();
         }
 
         $this->setBalance($this->getBalance() - $value);
@@ -81,7 +87,7 @@ class WalletDomain
     public function deposit(float $value): self
     {
         if ($this->status !== WalletStatusEnum::ACTIVE) {
-            throw new OnlyActiveWalletCanDeposit();
+            throw new OnlyActiveWalletCanDepositException();
         }
 
         $this->setBalance($this->getBalance() + $value);
