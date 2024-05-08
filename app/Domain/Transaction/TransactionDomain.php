@@ -2,8 +2,11 @@
 
 namespace App\Domain\Transaction;
 
+use App\Exception\Transaction\MinAllowedTransactionValueException;
+
 class TransactionDomain
 {
+    const MIN_TRANSACTION_VALUE = 0.01;
     private int $payerId;
     private int $payeeId;
     private float $value;
@@ -66,6 +69,10 @@ class TransactionDomain
 
     public function setValue(float $value): TransactionDomain
     {
+        if($value < self::MIN_TRANSACTION_VALUE) {
+            throw new MinAllowedTransactionValueException();
+        }
+
         $this->value = $value;
 
         return $this;

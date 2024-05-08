@@ -6,7 +6,7 @@ use App\Exception\AbstractSimplePaymentException;
 use App\Exception\Enum\InternalExceptionCodesEnum;
 use App\Exception\Enum\InternalExceptionMessagesEnum;
 
-class OnlyActiveWalletCanDeposit extends AbstractSimplePaymentException
+class OnlyActiveWalletCanDepositException extends AbstractSimplePaymentException
 {
     public function __construct()
     {

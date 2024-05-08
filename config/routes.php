@@ -15,7 +15,7 @@ Router::addGroup('/api', function () {
         Router::post('/login', [UserController::class, 'login']);
     });
 
-    Router::addGroup('/transaction', function () {
+    Router::addGroup('/transfer', function () {
         Router::post(
             '',
             [TransactionController::class, 'create'],

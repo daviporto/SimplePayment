@@ -13,7 +13,7 @@ use Test\TestUtils;
 
 class CreateTransactionTest extends TestCase
 {
-    const ROUTE = 'api/transaction';
+    const ROUTE = 'api/transfer';
 
     const DEFAULT_BALANCE = 1000.00;
     const TRANSACTION_VALUE = 100.00;

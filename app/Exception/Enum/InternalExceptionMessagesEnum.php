@@ -25,4 +25,7 @@ enum InternalExceptionMessagesEnum: string
     case UnauthorizedTransaction = 'unauthorized transaction';
     case OnlyActiveWalletCanWithdraw = 'only active wallet can withdraw';
     case OnlyActiveWalletCanDeposit = 'only active wallet can deposit';
+    case OwnerDoesntHaveWallet = 'owner doesnt have wallet';
+
+    case MinAllowedTransactionValue = 'min allowed transaction value';
 }

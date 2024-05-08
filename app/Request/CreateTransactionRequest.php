@@ -16,7 +16,7 @@ class CreateTransactionRequest extends FormRequest
         return [
             'payer' => 'required|integer',
             'payee' => 'required|integer',
-            'value' => 'required|numeric',
+            'value' => 'required|numeric|min:0.01'
         ];
     }
 }

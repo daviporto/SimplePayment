@@ -25,4 +25,7 @@ enum InternalExceptionCodesEnum: int
     case UnauthorizedTransaction = 3002;
     case OnlyActiveWalletCanWithdraw = 3003;
     case OnlyActiveWalletCanDeposit = 3004;
+    case OwnerDoesntHaveWallet = 3005;
+
+    case MinAllowedTransactionValue = 4000;
 }

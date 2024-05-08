@@ -6,7 +6,7 @@ use App\Exception\AbstractSimplePaymentException;
 use App\Exception\Enum\InternalExceptionCodesEnum;
 use App\Exception\Enum\InternalExceptionMessagesEnum;
 
-class OnlyActiveWalletCanWithdraw extends AbstractSimplePaymentException
+class OnlyActiveWalletCanWithdrawException extends AbstractSimplePaymentException
 {
     public function __construct()
     {
