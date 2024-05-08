@@ -174,4 +174,15 @@ class UserDomainTest extends TestCase
 
         $this->domain->canExecutePayment(1);
     }
+
+    public function testGetUsers()
+    {
+        $users = $this->domain->getUsers();
+
+        $this->assertNotEmpty($users);
+
+        foreach ($users as $user) {
+            $this->assertInstanceOf(UserDomainInterface::class, $user);
+        }
+    }
 }
