@@ -64,4 +64,15 @@ class TransactionDomainTest extends TestCase
 
         $this->domain->setValue(0);
     }
+
+    public function testGetTransaction()
+    {
+        $transactions = $this->domain->getTransactions(1);
+
+        $this->assertNotEmpty($transactions);
+
+        foreach ($transactions as $transaction) {
+            $this->assertInstanceOf(TransactionDomain::class, $transaction);
+        }
+    }
 }

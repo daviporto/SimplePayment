@@ -19,10 +19,7 @@ Router::addGroup('/api', function () {
     });
 
     Router::addGroup('/transfer', function () {
-        Router::post(
-            '',
-            [TransactionController::class, 'create'],
-            ['middleware' => [AuthenticationMiddleware::class]]
-        );
-    });
+        Router::post('', [TransactionController::class, 'create'],);
+        Router::get('', [TransactionController::class, 'index']);
+    }, ['middleware' => [AuthenticationMiddleware::class]]);
 });

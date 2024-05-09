@@ -82,6 +82,29 @@ class UserDomain implements UserDomainInterface
         return $user->fromArray($data);
     }
 
+    public function getUsers(): array
+    {
+        $users =  $this->repository->findAll();
+
+        return array_map(function(array $userData){
+            return UserFactory::createUser($userData['type'], $this->repository)
+                ->fromArray($userData);
+        }, $users);
+    }
+
+    public function register(): void
+    {
+        if ($this->repository->emailExists($this->email)) {
+            throw new EmailAlreadyExistsException($this->email);
+        }
+
+        if ($this->repository->cpfExists($this->cpf)) {
+            throw new CpfAlreadyExistsException($this->cpf);
+        }
+
+        $this->repository->save($this->toArray());
+    }
+
     public function getInitialBalance(): float
     {
         throw new UserNotLoadedException();
@@ -201,15 +224,5 @@ class UserDomain implements UserDomainInterface
         $this->id = $id;
 
         return $this;
-    }
-
-    public function getUsers(): array
-    {
-        $users =  $this->repository->findAll();
-
-        return array_map(function(array $userData){
-            return UserFactory::createUser($userData['type'], $this->repository)
-                ->fromArray($userData);
-        }, $users);
     }
 }

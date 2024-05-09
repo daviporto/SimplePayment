@@ -3,6 +3,7 @@
 namespace App\Domain\Transaction;
 
 use App\Exception\Transaction\MinAllowedTransactionValueException;
+use Carbon\Carbon;
 
 class TransactionDomain
 {
@@ -10,7 +11,7 @@ class TransactionDomain
     private int $payerId;
     private int $payeeId;
     private float $value;
-
+    private ?Carbon $createdAt;
     private ?int $id;
 
     public function __construct(private readonly TransactionRepositoryInterface $repository)
@@ -31,6 +32,7 @@ class TransactionDomain
             'value' => $this->getValue(),
             'payer_id' => $this->getPayerId(),
             'payee_id' => $this->getPayeeId(),
+            'created_at' => $this->getCreatedAt()?->toDateTimeString(),
         ];
     }
 
@@ -39,7 +41,19 @@ class TransactionDomain
         return $this->setPayerId($data['payer_id'])
             ->setPayeeId($data['payee_id'])
             ->setValue($data['value'])
-            ->setId($data['id'] ?? null);
+            ->setId($data['id'] ?? null)
+            ->setCreatedAt($data['created_at'] ?? null);
+    }
+
+    /** @return array<integer,TransactionDomain> */
+    public function getTransactions(int $solicitorId): array
+    {
+        $transactions = $this->repository->getTransactions($solicitorId);
+
+        return array_map(function (array $transactionData) {
+            return (new TransactionDomain($this->repository))
+                ->fromArray($transactionData);
+        }, $transactions);
     }
 
     public function getPayerId(): int
@@ -90,6 +104,24 @@ class TransactionDomain
     public function setId(?int $id): TransactionDomain
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?Carbon
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(Carbon|string|null $createdAt): TransactionDomain
+    {
+        if (!$createdAt) {
+            $this->createdAt = null;
+        } elseif ($createdAt instanceof Carbon) {
+            $this->createdAt = $createdAt;
+        } else {
+            $this->createdAt = Carbon::parse($createdAt);
+        }
 
         return $this;
     }

@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Middleware\AuthenticationMiddleware;
 use App\Request\CreateTransactionRequest;
+use App\Resource\TransactionResource;
 use App\Service\TransactionServiceInterface;
 use Hyperf\Context\Context;
 use Psr\Http\Message\ResponseInterface;
@@ -20,5 +21,14 @@ class TransactionController extends AbstractController
             ->create($request->validated(), Context::get(AuthenticationMiddleware::CONTEXT_USER_ID_KEY));
 
         return $this->response->withStatus(Status::CREATED);
+    }
+
+    public function index(): ResponseInterface
+    {
+        $transactions = make(TransactionServiceInterface::class)->getTransactions(
+            Context::get(AuthenticationMiddleware::CONTEXT_USER_ID_KEY)
+        );
+
+        return TransactionResource::collection($transactions)->toResponse();
     }
 }

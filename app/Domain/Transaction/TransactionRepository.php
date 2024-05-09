@@ -10,4 +10,12 @@ class TransactionRepository implements TransactionRepositoryInterface
     {
         Transaction::create($data);
     }
+
+    public function getTransactions(int $solicitorId): array
+    {
+        return Transaction::where('payer_id', $solicitorId)
+            ->orWhere('payee_id', $solicitorId)
+            ->get()
+            ->toArray();
+    }
 }
