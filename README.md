@@ -13,7 +13,7 @@ docker-compose up --build
 ## API Documentation
 - The API documentation is available in the OpenAPI format, in the file `openApi.yaml` at the root of the project.
 
-- f you're using an IDE from the JetBrains family, you can use the plugin OpenAPI Specification to view the documentation. 
+- If you're using an IDE from the JetBrains family, you can use the plugin OpenAPI Specification to view the documentation. 
 Normally it is installed by default.
 
 ## How to consume the API
