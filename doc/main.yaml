@@ -50,6 +50,8 @@ paths:
             - BearerAuth: []
       tags:
         - Transfer
+      description:
+            Create a new transaction
       requestBody:
         $ref: './Schema/Transaction/RequestBody/CreateTransaction.yaml'
       responses:
@@ -57,3 +59,13 @@ paths:
             description: No Content
         422:
           $ref: './Schema/Common/Response/ValidationErrorResponse.yaml'
+    get:
+        security:
+            - BearerAuth: []
+        tags:
+            - Transfer
+        description:
+            Get all transactions that the user is involved in
+        responses:
+            '200':
+              $ref: './Schema/Transaction/Response/ShowTransactionResponse.yaml'
