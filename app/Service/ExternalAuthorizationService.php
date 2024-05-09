@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Throwable;
@@ -30,6 +31,9 @@ class ExternalAuthorizationService implements ExternalAuthorizationServiceInterf
         }
     }
 
+    /**
+     * @throws GuzzleException
+     */
     private function callExternalAuthorizer($data): array
     {
         $client = make(Client::class);

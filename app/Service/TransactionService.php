@@ -24,6 +24,7 @@ class TransactionService implements TransactionServiceInterface
     public function create(array $data, int $requesterId): void
     {
         $dataTransactionService = make(DataTransactionServiceInterface::class);
+
         try {
             $dataTransactionService->begin();
 
@@ -52,7 +53,7 @@ class TransactionService implements TransactionServiceInterface
 
             $dataTransactionService->commit();
         } catch (Exception $e) {
-            make(StdoutLoggerInterface::class)->error($e->getMessage());
+            make(ErrorReporterServiceInterface::class)->handle($e);
 
             $dataTransactionService->rollback();
 

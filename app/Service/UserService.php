@@ -36,7 +36,7 @@ class UserService implements UserServiceInterface
 
             $transactionService->commit();
         } catch (Exception $e) {
-            make(StdoutLoggerInterface::class)->error($e->getMessage());
+            make(ErrorReporterServiceInterface::class)->handle($e);
 
             $transactionService->rollback();
             throw $e;
@@ -64,7 +64,7 @@ class UserService implements UserServiceInterface
 
             return ['token' => $token];
         } catch (Exception $e) {
-            make(StdoutLoggerInterface::class)->error($e->getMessage());
+            make(ErrorReporterServiceInterface::class)->handle($e);
 
             $transactionService->rollback();
 
