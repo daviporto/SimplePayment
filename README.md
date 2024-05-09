@@ -10,17 +10,16 @@ docker-compose up --build
 - By default, it runs the server on port 9511 and the database on port 3599.
 
 
-## Api Documentation
-- The api documentation is available in the openApi format, in the file `openapi.yaml` 
-at the root of the project.
+## API Documentation
+- The API documentation is available in the OpenAPI format, in the file openapi.yaml at the root of the project.
 
-- If you're using an ide from the jetbrains family, you can use the plugin `OpenAPI Specification` 
-to view the documentation. Normally its installed by default.
+- f you're using an IDE from the JetBrains family, you can use the plugin OpenAPI Specification to view the documentation. 
+Normally it is installed by default.
 
-## How to consume the api 
-1. The api can be used either importing the openapi.yaml file into a client like postman or insomnia,
+## How to consume the API
+1. The API can be used either importing the openapi.yaml file into a client like Postman or Insomnia.
 
-2. If yre using an ide from the jetbrains family, you can the files located in the http folder to test the api.
+2. If you're using an IDE from the JetBrains family, you can use the files located in the `http` folder to test the API.
 
 ## How to run the tests
 - To run the tests, you can use the following command:
