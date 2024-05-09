@@ -20,7 +20,7 @@ class UserDomain implements UserDomainInterface
     private string $cpf;
     private ?int $id;
 
-    public function __construct(private UserRepositoryInterface $repository)
+    public function __construct(private readonly UserRepositoryInterface $repository)
     {
     }
 
@@ -183,19 +183,6 @@ class UserDomain implements UserDomainInterface
         $this->cpf = $cpf;
 
         return $this;
-    }
-
-    public function register(): void
-    {
-        if ($this->repository->emailExists($this->email)) {
-            throw new EmailAlreadyExistsException($this->email);
-        }
-
-        if ($this->repository->cpfExists($this->cpf)) {
-            throw new CpfAlreadyExistsException($this->cpf);
-        }
-
-        $this->repository->save($this->toArray());
     }
 
     public function hashPassword(): self

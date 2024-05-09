@@ -12,7 +12,7 @@ use function Hyperf\Config\config;
 
 class TokenService implements TokenServiceInterface
 {
-    function generateToken(int $userId): string
+    public function generateToken(int $userId): string
     {
         return JWT::encode([
             'user_id' => $userId,
@@ -22,7 +22,7 @@ class TokenService implements TokenServiceInterface
         );
     }
 
-    function getUserId(string $token): int
+    public function getUserId(string $token): int
     {
         try {
             $decoded = JWT::decode($token, new Key(config('jwt_secret_key'), 'HS256'));

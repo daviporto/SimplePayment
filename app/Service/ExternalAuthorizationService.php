@@ -45,7 +45,7 @@ class ExternalAuthorizationService implements ExternalAuthorizationServiceInterf
     {
         $client = make(Client::class);
 
-        $response = $client->post(self::AUTHORIZATION_URL, [
+        $response = $client->post($this->providerUrl, [
             RequestOptions::JSON => $data
         ]);
 
