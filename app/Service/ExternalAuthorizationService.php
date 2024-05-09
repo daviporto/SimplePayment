@@ -7,12 +7,19 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Throwable;
+use function Hyperf\Config\config;
 use function Hyperf\Support\make;
 
 class ExternalAuthorizationService implements ExternalAuthorizationServiceInterface
 {
-    const AUTHORIZATION_URL = 'https://run.mocky.io/v3/5794d450-d2e2-4412-8131-73d0293ac1cc';
     const AUTHORIZED_MESSAGE = 'Autorizado';
+
+    private string $providerUrl;
+
+    public function __construct()
+    {
+        $this->providerUrl = config('external_authorizer_provider_url');
+    }
 
     public function checkAuthorization(string $payerDocument, string $payeeDocument, float $value): bool
     {

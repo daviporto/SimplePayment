@@ -14,7 +14,12 @@ use function Hyperf\Support\make;
 
 class EmailService implements EmailServiceInterface
 {
-    const PROVIDER_URL = 'https://run.mocky.io/v3/54dc2cf1-3add-45b5-b5a9-6bf7e7f1f4a6';
+    private string $providerUrl;
+
+    public function __construct()
+    {
+        $this->providerUrl = config('email_provider_url');
+    }
 
     public function sendEmail(string $address, string $subject, string $body): bool
     {
@@ -45,7 +50,7 @@ class EmailService implements EmailServiceInterface
     {
         $client = make(Client::class);
 
-        $response = $client->post(self::PROVIDER_URL, [
+        $response = $client->post($this->providerUrl, [
             RequestOptions::JSON => $data
         ]);
 
