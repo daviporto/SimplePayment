@@ -11,7 +11,6 @@ use App\Domain\Wallet\WalletDomain;
 use App\Domain\Wallet\WalletRepository;
 use App\Exception\Wallet\UnauthorizedTransactionException;
 use Exception;
-use Hyperf\Contract\StdoutLoggerInterface;
 use function Hyperf\Coroutine\co;
 use function Hyperf\Coroutine\defer;
 use function Hyperf\Support\make;
@@ -103,5 +102,15 @@ class TransactionService implements TransactionServiceInterface
     {
         make(EmailServiceInterface::class)
             ->sendEmail($payee->getEmail(), 'Payment Received', "You received a payment of $value");
+    }
+
+    public function getTransactions(int $solicitorId): array
+    {
+        $transactions =  make(TransactionDomain::class, [make(TransactionRepository::class)])
+            ->getTransactions($solicitorId);
+
+        return array_map(function (TransactionDomain $transaction) {
+            return $transaction->toArray();
+        }, $transactions);
     }
 }

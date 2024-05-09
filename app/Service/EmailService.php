@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Retry\Retry;
@@ -13,7 +14,12 @@ use function Hyperf\Support\make;
 
 class EmailService implements EmailServiceInterface
 {
-    const PROVIDER_URL = 'https://run.mocky.io/v3/54dc2cf1-3add-45b5-b5a9-6bf7e7f1f4a6';
+    private string $providerUrl;
+
+    public function __construct()
+    {
+        $this->providerUrl = config('email_provider_url');
+    }
 
     public function sendEmail(string $address, string $subject, string $body): bool
     {
@@ -21,8 +27,9 @@ class EmailService implements EmailServiceInterface
 
         Retry::whenThrows(Exception::class)
             ->max(config('max_email_retries'))
+            ->inSeconds(config('email_retry_interval'))
             ->fallback(function (Throwable $e) {
-                make(ErrorReporterServiceInterface::class)->handle($e);
+                make(StdoutLoggerInterface::class)->error($e->getMessage());
             })->call(function () use ($address, $subject, $body, &$succeeded) {
                 $response = $this->callEmailProvider([
                     'address' => $address,
@@ -36,11 +43,14 @@ class EmailService implements EmailServiceInterface
         return $succeeded;
     }
 
+    /**
+     * @throws GuzzleException
+     */
     private function callEmailProvider(array $data)
     {
         $client = make(Client::class);
 
-        $response = $client->post(self::PROVIDER_URL, [
+        $response = $client->post($this->providerUrl, [
             RequestOptions::JSON => $data
         ]);
 

@@ -20,7 +20,7 @@ class UserDomain implements UserDomainInterface
     private string $cpf;
     private ?int $id;
 
-    public function __construct(private UserRepositoryInterface $repository)
+    public function __construct(private readonly UserRepositoryInterface $repository)
     {
     }
 
@@ -80,6 +80,29 @@ class UserDomain implements UserDomainInterface
         $user = UserFactory::createUser($data['type'], $this->repository);
 
         return $user->fromArray($data);
+    }
+
+    public function getUsers(): array
+    {
+        $users =  $this->repository->findAll();
+
+        return array_map(function(array $userData){
+            return UserFactory::createUser($userData['type'], $this->repository)
+                ->fromArray($userData);
+        }, $users);
+    }
+
+    public function register(): void
+    {
+        if ($this->repository->emailExists($this->email)) {
+            throw new EmailAlreadyExistsException($this->email);
+        }
+
+        if ($this->repository->cpfExists($this->cpf)) {
+            throw new CpfAlreadyExistsException($this->cpf);
+        }
+
+        $this->repository->save($this->toArray());
     }
 
     public function getInitialBalance(): float
@@ -162,19 +185,6 @@ class UserDomain implements UserDomainInterface
         return $this;
     }
 
-    public function register(): void
-    {
-        if ($this->repository->emailExists($this->email)) {
-            throw new EmailAlreadyExistsException($this->email);
-        }
-
-        if ($this->repository->cpfExists($this->cpf)) {
-            throw new CpfAlreadyExistsException($this->cpf);
-        }
-
-        $this->repository->save($this->toArray());
-    }
-
     public function hashPassword(): self
     {
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
@@ -201,15 +211,5 @@ class UserDomain implements UserDomainInterface
         $this->id = $id;
 
         return $this;
-    }
-
-    public function getUsers(): array
-    {
-        $users =  $this->repository->findAll();
-
-        return array_map(function(array $userData){
-            return UserFactory::createUser($userData['type'], $this->repository)
-                ->fromArray($userData);
-        }, $users);
     }
 }

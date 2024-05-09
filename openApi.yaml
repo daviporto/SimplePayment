@@ -200,6 +200,56 @@
         }
       }
     },
+    "/user": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "ID of the user",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the user",
+                          "example": "John Doe"
+                        },
+                        "type": {
+                          "type": "string",
+                          "description": "Type of the user",
+                          "example": "customer",
+                          "enum": [
+                            "customer",
+                            "retailer"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/tranfer": {
       "post": {
         "security": [
@@ -210,6 +260,7 @@
         "tags": [
           "Transfer"
         ],
+        "description": "Create a new transaction",
         "requestBody": {
           "content": {
             "application/json": {
@@ -253,6 +304,57 @@
                   "items": {
                     "type": "string",
                     "description": "Error message"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "tags": [
+          "Transfer"
+        ],
+        "description": "Get all transactions that the user is involved in",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "id",
+                    "payerId",
+                    "payeeId",
+                    "value",
+                    "createdAt"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "The ID of the transaction",
+                      "example": 1
+                    },
+                    "payerId": {
+                      "type": "integer",
+                      "description": "The ID of the payer",
+                      "example": 1
+                    },
+                    "payeeId": {
+                      "type": "integer",
+                      "description": "The ID of the payee",
+                      "example": 2
+                    },
+                    "value": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "The value of the transaction",
+                      "example": 100.58
+                    }
                   }
                 }
               }

@@ -1,3 +1,4 @@
+### Register payer
 < {%
     client.global.set("transaction-payerName", $random.uuid);
     client.global.set("transaction-payeeName", $random.uuid);
@@ -12,6 +13,8 @@
 
     client.global.set("transaction-payerCpf", generateElevenDigitNumber());
     client.global.set("transaction-payeeCpf", generateElevenDigitNumber());
+    client.global.set("transaction-value", Math.random().toFixed(2));
+
 %}
 POST {{host}}/api/user/register
 Accept: application/json
@@ -26,7 +29,7 @@ Content-Type: application/json
   "type": "customer"
 }
 
-###
+### Register payee
 POST {{host}}/api/user/register
 Accept: application/json
 Content-Type: application/json
@@ -41,8 +44,7 @@ Content-Type: application/json
 }
 
 
-###
-
+### login payer
 POST {{host}}/api/user/login
 Accept: application/json
 Content-Type: application/json
@@ -59,8 +61,7 @@ Content-Type: application/json
     client.global.set("transaction-flux.token", response.body.data.token);
 %}
 
-###
-
+### Show users
 GET {{host}}/api/user
 Accept: application/json
 Content-Type: application/json
@@ -71,7 +72,9 @@ Authorization: Bearer {{transaction-flux.token}}
         client.assert(response.status === 200, "Response status is not 200");
     });
 
-    client.assert(response.body.data.length > 0, "No users found");
+    client.test("Request returns users", function () {
+        client.assert(response.body.data.length > 0, "No users found");
+    });
 
     for (let user of response.body.data) {
         if (user.name == client.global.get("transaction-payerName")) {
@@ -80,11 +83,15 @@ Authorization: Bearer {{transaction-flux.token}}
             client.global.set("transaction-payeeId", user.id);
         }
     }
-    client.assert(client.global.get("transaction-payerName"), "Payer not found");
-    client.assert(client.global.get("transaction-payeeName"), "Payee not found");
+
+    client.test("Request returns payer and payee", function () {
+        client.assert(client.global.get("transaction-payerName"), "Payer not found");
+        client.assert(client.global.get("transaction-payeeName"), "Payee not found");
+    });
+
 %}
 
-###
+### Transfer
 POST {{host}}/api/transfer
 Accept: application/json
 Content-Type: application/json
@@ -94,10 +101,42 @@ Authorization: Bearer {{transaction-flux.token}}
 {
   "payer": "{{transaction-payerId}}",
   "payee": "{{transaction-payeeId}}",
-  "value": 0.1
+  "value": "{{transaction-value}}"
 }
 > {%
     client.test("Request executed successfully", function () {
         client.assert(response.status === 201, "Response status is not 204");
     });
+%}
+
+### Show Transactions
+GET {{host}}/api/transfer
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{transaction-flux.token}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("Request returns transactions", function () {
+        client.assert(response.body.data.length > 0, "No transactions found");
+    });
+
+    for (let transaction of response.body.data) {
+        if(
+            transaction.payerId == client.global.get("transaction-payerId") &&
+            transaction.payeeId == client.global.get("transaction-payeeId") &&
+            transaction.value == client.global.get("transaction-value")
+        ) {
+            client.global.set("transaction-id", transaction.id);
+            break;
+        }
+    }
+
+    client.test("Request returns transaction", function () {
+        client.assert(client.global.get("transaction-id"), "Transaction not found");
+    });
+
 %}

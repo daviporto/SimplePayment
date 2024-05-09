@@ -4,6 +4,7 @@ namespace Test\Cases\Unit\Transaction;
 
 use App\Domain\Transaction\TransactionDomain;
 use App\Exception\Transaction\MinAllowedTransactionValueException;
+use Carbon\Carbon;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\TestCase;
@@ -41,13 +42,15 @@ class TransactionDomainTest extends TestCase
             ->setId($id = $this->faker->unique()->randomNumber())
             ->setValue($value = $this->faker->randomFloat(2, 0, 1000))
             ->setPayerId($payerId = $this->faker->unique()->randomNumber())
-            ->setPayeeId($payeeId = $this->faker->unique()->randomNumber());
+            ->setPayeeId($payeeId = $this->faker->unique()->randomNumber())
+            ->setCreatedAt($createdAt = Carbon::now()->toDateTimeString());
 
         $this->assertSame([
             'id' => $id,
             'value' => $value,
             'payer_id' => $payerId,
             'payee_id' => $payeeId,
+            'created_at' => $createdAt,
         ], $this->domain->toArray());
     }
 
@@ -63,5 +66,16 @@ class TransactionDomainTest extends TestCase
         $this->expectException(MinAllowedTransactionValueException::class);
 
         $this->domain->setValue(0);
+    }
+
+    public function testGetTransaction()
+    {
+        $transactions = $this->domain->getTransactions(1);
+
+        $this->assertNotEmpty($transactions);
+
+        foreach ($transactions as $transaction) {
+            $this->assertInstanceOf(TransactionDomain::class, $transaction);
+        }
     }
 }

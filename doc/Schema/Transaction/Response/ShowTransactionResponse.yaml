@@ -1,0 +1,27 @@
+content:
+  application/json:
+    schema:
+      required:
+        - id
+        - payerId
+        - payeeId
+        - value
+        - createdAt
+      properties:
+        id:
+          type: integer
+          description: The ID of the transaction
+          example: 1
+        payerId:
+          type: integer
+          description: The ID of the payer
+          example: 1
+        payeeId:
+          type: integer
+          description: The ID of the payee
+          example: 2
+        value:
+          type: number
+          format: float
+          description: The value of the transaction
+          example: 100.58
