@@ -13,6 +13,12 @@ Authorization: Bearer {{token}}
 }
 > {%
     client.test("Request executed successfully", function () {
-        client.assert(response.status === 204, "Response status is not 204");
+        client.assert(response.status === 201, "Response status is not 201");
     });
 %}
+
+### Show Transactions
+GET {{host}}/api/transfer
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{transaction-flux.token}}

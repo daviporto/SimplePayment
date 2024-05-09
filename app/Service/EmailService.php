@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Retry\Retry;
@@ -21,8 +22,9 @@ class EmailService implements EmailServiceInterface
 
         Retry::whenThrows(Exception::class)
             ->max(config('max_email_retries'))
+            ->inSeconds(config('email_retry_interval'))
             ->fallback(function (Throwable $e) {
-                make(ErrorReporterServiceInterface::class)->handle($e);
+                make(StdoutLoggerInterface::class)->error($e->getMessage());
             })->call(function () use ($address, $subject, $body, &$succeeded) {
                 $response = $this->callEmailProvider([
                     'address' => $address,
@@ -36,6 +38,9 @@ class EmailService implements EmailServiceInterface
         return $succeeded;
     }
 
+    /**
+     * @throws GuzzleException
+     */
     private function callEmailProvider(array $data)
     {
         $client = make(Client::class);
