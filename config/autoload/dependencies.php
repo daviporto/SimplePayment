@@ -6,6 +6,8 @@ use App\Service\DataTransactionService;
 use App\Service\DataTransactionServiceInterface;
 use App\Service\EmailService;
 use App\Service\EmailServiceInterface;
+use App\Service\ErrorReporterService;
+use App\Service\ErrorReporterServiceInterface;
 use App\Service\ExternalAuthorizationService;
 use App\Service\ExternalAuthorizationServiceInterface;
 use App\Service\TokenService;
@@ -24,5 +26,6 @@ return [
     DataTransactionServiceInterface::class => DataTransactionService::class,
     TransactionServiceInterface::class => TransactionService::class,
     ExternalAuthorizationServiceInterface::class => ExternalAuthorizationService::class,
-    EmailServiceInterface::class=> EmailService::class,
+    EmailServiceInterface::class => EmailService::class,
+    ErrorReporterServiceInterface::class => ErrorReporterService::class,
 ];

@@ -22,7 +22,7 @@ class EmailService implements EmailServiceInterface
         Retry::whenThrows(Exception::class)
             ->max(config('max_email_retries'))
             ->fallback(function (Throwable $e) {
-                make(StdoutLoggerInterface::class)->error($e->getMessage());
+                make(ErrorReporterServiceInterface::class)->handle($e);
             })->call(function () use ($address, $subject, $body, &$succeeded) {
                 $response = $this->callEmailProvider([
                     'address' => $address,
