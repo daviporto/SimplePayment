@@ -57,4 +57,11 @@ class UserTestRepository implements UserRepositoryInterface
             'type' => $faker->randomElement(UserTypeEnum::getTypes())
         ];
     }
+
+    public function findAll(): array
+    {
+        $user = $this->findById(1);
+
+        return array_fill(0, 5, $user);
+    }
 }

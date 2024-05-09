@@ -13,6 +13,9 @@ Router::addGroup('/api', function () {
     Router::addGroup('/user', function () {
         Router::post('/register', [UserController::class, 'register']);
         Router::post('/login', [UserController::class, 'login']);
+
+        Router::get('', [UserController::class, 'index'], ['middleware' => [AuthenticationMiddleware::class]]);
+
     });
 
     Router::addGroup('/transfer', function () {

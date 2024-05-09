@@ -10,7 +10,7 @@ use App\Exception\Wallet\OwnerDoesntHaveWalletException;
 
 class WalletDomain
 {
-    private ?int $id;
+    private ?int $id = null;
     private int $ownerId;
     private float $balance;
     private WalletStatusEnum $status;

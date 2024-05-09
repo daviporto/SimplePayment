@@ -34,6 +34,15 @@ paths:
           $ref: './Schema/User/Response/LoginSuccessResponse.yaml'
         422:
           $ref: './Schema/User/Response/LoginUnprocessableEntityResponse.yaml'
+  /user:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - User
+      responses:
+        '200':
+          $ref: './Schema/User/Response/GetUserResponse.yaml'
 
   /tranfer:
     post:

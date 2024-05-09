@@ -35,4 +35,9 @@ class UserRepository implements UserRepositoryInterface
     {
         return User::where('cpf', $cpf)->exists();
     }
+
+    public function findAll(): array
+    {
+        return User::all()->toArray();
+    }
 }

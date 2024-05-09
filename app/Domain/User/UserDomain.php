@@ -202,4 +202,14 @@ class UserDomain implements UserDomainInterface
 
         return $this;
     }
+
+    public function getUsers(): array
+    {
+        $users =  $this->repository->findAll();
+
+        return array_map(function(array $userData){
+            return UserFactory::createUser($userData['type'], $this->repository)
+                ->fromArray($userData);
+        }, $users);
+    }
 }
