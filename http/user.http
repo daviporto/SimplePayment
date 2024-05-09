@@ -26,5 +26,26 @@ Content-Type: application/json
         client.assert(response.status === 200, "Response status is not 200");
     });
     client.global.set("token", response.body.data.token);
- %}
+%}
+
 ###
+
+GET {{host}}/api/user
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.assert(response.body.data.length > 0, "No user found");
+
+    for (let user of response.body.data) {
+        if (user.email === client.global.get('email')) {
+            client.global.set("user_id", user.id);
+        }
+    }
+    client.assert(client.global.get("user_id"), "User not found");
+%}

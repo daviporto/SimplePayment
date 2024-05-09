@@ -1,0 +1,103 @@
+< {%
+    client.global.set("transaction-payerName", $random.uuid);
+    client.global.set("transaction-payeeName", $random.uuid);
+
+    client.global.set("transaction-payerEmail", $random.email)
+
+    function generateElevenDigitNumber() {
+        let min = 10E9;
+        let max = 10E10 - 1;
+       return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
+    }
+
+    client.global.set("transaction-payerCpf", generateElevenDigitNumber());
+    client.global.set("transaction-payeeCpf", generateElevenDigitNumber());
+%}
+POST {{host}}/api/user/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "{{transaction-payerName}}",
+  "password": "{{password}}",
+  "password_confirmation": "{{password}}",
+  "email": "{{transaction-payerEmail}}",
+  "cpf": "{{transaction-payerCpf}}",
+  "type": "customer"
+}
+
+###
+POST {{host}}/api/user/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "{{transaction-payeeName}}",
+  "password": "{{password}}",
+  "password_confirmation": "{{password}}",
+  "email": "{{$random.email}}",
+  "cpf": "{{transaction-payeeCpf}}",
+  "type": "customer"
+}
+
+
+###
+
+POST {{host}}/api/user/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "password": "{{password}}",
+  "email": "{{transaction-payerEmail}}"
+}
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.global.set("transaction-flux.token", response.body.data.token);
+%}
+
+###
+
+GET {{host}}/api/user
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{transaction-flux.token}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.assert(response.body.data.length > 0, "No users found");
+
+    for (let user of response.body.data) {
+        if (user.name == client.global.get("transaction-payerName")) {
+            client.global.set("transaction-payerId", user.id);
+        } else if (user.name == client.global.get("transaction-payeeName")) {
+            client.global.set("transaction-payeeId", user.id);
+        }
+    }
+    client.assert(client.global.get("transaction-payerName"), "Payer not found");
+    client.assert(client.global.get("transaction-payeeName"), "Payee not found");
+%}
+
+###
+POST {{host}}/api/transfer
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{transaction-flux.token}}
+
+
+{
+  "payer": "{{transaction-payerId}}",
+  "payee": "{{transaction-payeeId}}",
+  "value": 0.1
+}
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 204");
+    });
+%}
